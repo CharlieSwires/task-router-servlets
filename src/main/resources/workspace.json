@@ -6,7 +6,7 @@
       "name": "Bob",
       "attributes": {
         "products": [
-          "ProgrammableSMS"
+          "ProgrammableSMS","ProgrammableVoice"
         ],
         "contact_uri": "%(bob_number)s"
       }
@@ -15,7 +15,7 @@
       "name": "Alice",
       "attributes": {
         "products": [
-          "ProgrammableVoice"
+          "ProgrammableVoice","ProgrammableSMS"
         ],
         "contact_uri": "%(alice_number)s"        
       }
