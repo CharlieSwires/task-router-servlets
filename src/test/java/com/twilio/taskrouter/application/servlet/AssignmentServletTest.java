@@ -43,6 +43,7 @@ public class AssignmentServletTest {
 
   @Test
   public void shouldCallPostWorkSid() throws Exception {
+    when(requestMock.getParameter("From")).thenReturn("+441234567890");
     assignmentServlet.doPost(requestMock, responseMock);
 
     verify(twilioAppSettingsMock, times(1)).getPostWorkActivitySid();
@@ -50,8 +51,11 @@ public class AssignmentServletTest {
 
   @Test
   public void shouldReturnRightDequeueInstructionInJson() throws Exception {
-    String expectedDequeueInstruction = Json.createObjectBuilder()
+      when(requestMock.getParameter("From")).thenReturn("+441234567890");
+      final String callerPhone = requestMock.getParameter("From");
+      String expectedDequeueInstruction = Json.createObjectBuilder()
       .add("instruction", "dequeue")
+      .add("from", callerPhone)
       .add("post_work_activity_sid", POST_WORK_ACTIVITY_MOCK)
       .build().toString();
 

@@ -23,6 +23,7 @@ public class AssignmentServlet extends HttpServlet {
   public AssignmentServlet(TwilioAppSettings twilioAppSettings) {
     dequeueInstruction = Json.createObjectBuilder()
       .add("instruction", "dequeue")
+      .add("from", "replace me with caller number")
       .add("post_work_activity_sid", twilioAppSettings.getPostWorkActivitySid())
       .build().toString();
   }
@@ -30,7 +31,9 @@ public class AssignmentServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException {
+      final String callerPhone = req.getParameter("From");
     resp.setContentType("application/json");
-    resp.getWriter().print(dequeueInstruction);
+    resp.getWriter().print(dequeueInstruction
+            .replace("replace me with caller number", callerPhone));
   }
 }
