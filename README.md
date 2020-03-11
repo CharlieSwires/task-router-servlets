@@ -83,7 +83,7 @@ uses a SQLite database to log phone calls which were not assisted.
   work as expected if you run it using `localhost`.
 
   ```bash
-  $ ngrok http 8000
+  $ ngrok http 8080
   ```
 
   Once ngrok is running open up your browser and go to your ngrok URL. It will look something like this:
@@ -110,14 +110,19 @@ uses a SQLite database to log phone calls which were not assisted.
   For Voice, press any other key.
 
 1. Reply with 1.
-1. The specified phone for agent 1 will be called:  __agent1-phone__.
+1. The specified phone for agent 2 (Bob) will be called:  __agent2-phone__.
+1. If __agent2-phone__ is not answered in 30 seconds then __agent1-phone__ will
+  be called.
+1. In case the second agent doesn't answer the call, it will be logged as a
+  missed call. You can see all missed calls in the main page of the running
+  server at [http://{sub-domain}.ngrok.io](//localhost:8080).
+1. Repeat the process but enter any key different to __1__ to choose Voice.
+1. The specified phone for agent 1 (Alice) will be called:  __agent1-phone__.
 1. If __agent1-phone__ is not answered in 30 seconds then __agent2-phone__ will
   be called.
 1. In case the second agent doesn't answer the call, it will be logged as a
   missed call. You can see all missed calls in the main page of the running
-  server at [http://{sub-domain}.ngrok.io](//localhost:8000).
-1. Repeat the process but enter any key different to __1__ to choose Voice.
-
+  server at [http://{sub-domain}.ngrok.io](//localhost:8080).
  [twilio-phone-number]: https://www.twilio.com/console/phone-numbers/incoming
 
  ## Meta
