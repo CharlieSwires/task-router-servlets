@@ -17,15 +17,11 @@
         "products": [
           "ProgrammableVoice"
         ],
-        "contact_uri": "%(alice_number)s"
+        "contact_uri": "%(alice_number)s"        
       }
     }
   ],
   "activities": [
-    {
-      "name": "Offline",
-      "availability": "false"
-    },
     {
       "name": "Idle",
       "availability": "true"

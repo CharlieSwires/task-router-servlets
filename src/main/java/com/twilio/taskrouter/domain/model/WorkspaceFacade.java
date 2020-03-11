@@ -30,137 +30,148 @@ import java.util.stream.StreamSupport;
 
 public class WorkspaceFacade {
 
-  private final TwilioRestClient client;
+    private final TwilioRestClient client;
 
-  private final Workspace workspace;
+    private final Workspace workspace;
 
-  private Activity idleActivity;
+    private Activity idleActivity;
 
-  private Map<String, Worker> phoneToWorker;
+    private Map<String, Worker> phoneToWorker;
 
-  public WorkspaceFacade(TwilioRestClient client, Workspace workspace) {
-    this.client = client;
-    this.workspace = workspace;
-  }
+    public WorkspaceFacade(TwilioRestClient client, Workspace workspace) {
+        this.client = client;
+        this.workspace = workspace;
+    }
 
-  public static WorkspaceFacade create(TwilioRestClient client,
-                                       Map<String, String> params) {
-    String workspaceName = params.get("FriendlyName");
-    String eventCallbackUrl = params.get("EventCallbackUrl");
+    public static WorkspaceFacade create(TwilioRestClient client,
+            Map<String, String> params) {
+        String workspaceName = params.get("FriendlyName");
+        String eventCallbackUrl = params.get("EventCallbackUrl");
 
-    ResourceSet<Workspace> execute = new WorkspaceReader()
-      .setFriendlyName(workspaceName)
-      .read(client);
-    StreamSupport.stream(execute.spliterator(), false)
-      .findFirst()
-      .ifPresent(workspace -> new WorkspaceDeleter(workspace.getSid()).delete(client));
+        ResourceSet<Workspace> execute = new WorkspaceReader()
+                .setFriendlyName(workspaceName)
+                .read(client);
+        StreamSupport.stream(execute.spliterator(), false)
+        .findFirst()
+        .ifPresent(workspace -> new WorkspaceDeleter(workspace.getSid()).delete(client));
 
-    Workspace workspace = new WorkspaceCreator(workspaceName)
-      .setEventCallbackUrl(eventCallbackUrl)
-      .create(client);
+        Workspace workspace = new WorkspaceCreator(workspaceName)
+                .setEventCallbackUrl(eventCallbackUrl)
+                .create(client);
 
-    return new WorkspaceFacade(client, workspace);
-  }
+        return new WorkspaceFacade(client, workspace);
+    }
 
-  public static Optional<WorkspaceFacade> findBySid(String workspaceSid,
-                                                    TwilioRestClient client) {
-    Workspace workspace = new WorkspaceFetcher(workspaceSid).fetch(client);
-    return Optional.of(new WorkspaceFacade(client, workspace));
-  }
+    public static Optional<WorkspaceFacade> findBySid(String workspaceSid,
+            TwilioRestClient client) {
+        Workspace workspace = new WorkspaceFetcher(workspaceSid).fetch(client);
+        return Optional.of(new WorkspaceFacade(client, workspace));
+    }
 
-  public String getFriendlyName() {
-    return workspace.getFriendlyName();
-  }
+    public String getFriendlyName() {
+        return workspace.getFriendlyName();
+    }
 
-  public String getSid() {
-    return workspace.getSid();
-  }
+    public String getSid() {
+        return workspace.getSid();
+    }
 
-  public Worker addWorker(Map<String, String> workerParams) {
-    return new WorkerCreator(workspace.getSid(), workerParams.get("FriendlyName"))
-      .setActivitySid(workerParams.get("ActivitySid"))
-      .setAttributes(workerParams.get("Attributes"))
-      .create(client);
-  }
+    public Activity addActivity(Map<String, String> activityParams) {
+        return Activity.creator(workspace.getSid(), activityParams.get("ActivityName"))
+                .setAvailable((boolean) (
+                        new Boolean(activityParams.get("Availability"))))
+                .create(client);
+    }
+    public Worker addWorker(Map<String, String> workerParams) {
+        return new WorkerCreator(workspace.getSid(),
+                workerParams.get("FriendlyName"))
+                .setActivitySid(workerParams.get("ActivitySid"))
+                .setAttributes(workerParams.get("Attributes"))
+                .create(client);
+    }
 
-  public void addTaskQueue(Map<String, String> taskQueueParams) {
-    new TaskQueueCreator(this.workspace.getSid(),
-      taskQueueParams.get("FriendlyName"),
-      taskQueueParams.get("ReservationActivitySid"),
-      taskQueueParams.get("AssignmentActivitySid"))
-      .create(client);
-  }
+    public void addTaskQueue(Map<String, String> taskQueueParams) {
+        new TaskQueueCreator(this.workspace.getSid(),
+                taskQueueParams.get("FriendlyName"),
+                taskQueueParams.get("ReservationActivitySid"),
+                taskQueueParams.get("AssignmentActivitySid"))
+        .create(client);
+    }
 
-  public Workflow addWorkflow(Map<String, String> workflowParams) {
-    return new WorkflowCreator(workspace.getSid(),
-      workflowParams.get("FriendlyName"),
-      workflowParams.get("Configuration"))
-      .setAssignmentCallbackUrl(workflowParams.get("AssignmentCallbackUrl"))
-      .setFallbackAssignmentCallbackUrl(workflowParams.get("FallbackAssignmentCallbackUrl"))
-      .setTaskReservationTimeout(Integer.valueOf(workflowParams.get("TaskReservationTimeout")))
-      .create(client);
-  }
+    public Workflow addWorkflow(Map<String, String> workflowParams) {
+        return new WorkflowCreator(workspace.getSid(),
+                workflowParams.get("FriendlyName"),
+                workflowParams.get("Configuration"))
+                .setAssignmentCallbackUrl(workflowParams.get("AssignmentCallbackUrl"))
+                .setFallbackAssignmentCallbackUrl(
+                        workflowParams.get("FallbackAssignmentCallbackUrl"))
+                .setTaskReservationTimeout(
+                        Integer.valueOf(workflowParams.get("TaskReservationTimeout")))
+                .create(client);
+    }
 
-  public Optional<Activity> findActivityByName(String activityName) {
-    return StreamSupport.stream(new ActivityReader(this.workspace.getSid())
-      .setFriendlyName(activityName)
-      .read(client).spliterator(), false
-    ).findFirst();
-  }
+    public Optional<Activity> findActivityByName(String activityName) {
+        return StreamSupport.stream(new ActivityReader(this.workspace.getSid())
+                .setFriendlyName(activityName)
+                .read(client).spliterator(), false
+                ).findFirst();
+    }
 
-  public Optional<TaskQueue> findTaskQueueByName(String queueName) {
-    return StreamSupport.stream(new TaskQueueReader(this.workspace.getSid())
-      .setFriendlyName(queueName)
-      .read(client).spliterator(), false
-    ).findFirst();
-  }
+    public Optional<TaskQueue> findTaskQueueByName(String queueName) {
+        return StreamSupport.stream(new TaskQueueReader(this.workspace.getSid())
+                .setFriendlyName(queueName)
+                .read(client).spliterator(), false
+                ).findFirst();
+    }
 
-  public Optional<Workflow> findWorkflowByName(String workflowName) {
-    return StreamSupport.stream(new WorkflowReader(this.workspace.getSid())
-      .setFriendlyName(workflowName)
-      .read(client).spliterator(), false
-    ).findFirst();
-  }
+    public Optional<Workflow> findWorkflowByName(String workflowName) {
+        return StreamSupport.stream(new WorkflowReader(this.workspace.getSid())
+                .setFriendlyName(workflowName)
+                .read(client).spliterator(), false
+                ).findFirst();
+    }
 
-  public Optional<Worker> findWorkerByPhone(String workerPhone) {
-    return Optional.ofNullable(getPhoneToWorker().get(workerPhone));
-  }
+    public Optional<Worker> findWorkerByPhone(String workerPhone) {
+        return Optional.ofNullable(getPhoneToWorker().get(workerPhone));
+    }
 
-  public Map<String, Worker> getPhoneToWorker() {
-    if (phoneToWorker == null) {
-      phoneToWorker = new HashMap<>();
-      StreamSupport.stream(
-        new WorkerReader(this.workspace.getSid()).read(client).spliterator(), false
-      ).forEach(worker -> {
-        try {
-          HashMap<String, Object> attributes = new ObjectMapper()
-            .readValue(worker.getAttributes(), HashMap.class);
-          phoneToWorker.put(attributes.get("contact_uri").toString(), worker);
-        } catch (IOException e) {
-          throw new TaskRouterException(
-            String.format("'%s' has a malformed json attributes", worker.getFriendlyName()));
+    public Map<String, Worker> getPhoneToWorker() {
+        if (phoneToWorker == null) {
+            phoneToWorker = new HashMap<>();
+            StreamSupport.stream(
+                    new WorkerReader(this.workspace.getSid()).read(client).spliterator(), false
+                    ).forEach(worker -> {
+                        try {
+                            HashMap<String, Object> attributes = new ObjectMapper()
+                                    .readValue(worker.getAttributes(), HashMap.class);
+                            phoneToWorker.put(attributes.get("contact_uri").toString(), worker);
+                        } catch (IOException e) {
+                            throw new TaskRouterException(
+                                    String.format("'%s' has a malformed json attributes",
+                                            worker.getFriendlyName()));
+                        }
+                    });
         }
-      });
+        return phoneToWorker;
     }
-    return phoneToWorker;
-  }
 
-  public Activity getIdleActivity() {
-    if (idleActivity == null) {
-      idleActivity = findActivityByName("Idle").get();
+    public Activity getIdleActivity() {
+        if (idleActivity == null) {
+            idleActivity = findActivityByName("Idle").get();
+        }
+        return idleActivity;
     }
-    return idleActivity;
-  }
 
-  public void updateWorkerStatus(Worker worker, String activityFriendlyName) {
-    Activity activity = findActivityByName(activityFriendlyName).orElseThrow(() ->
-      new TaskRouterException(
-        String.format("The activity '%s' doesn't exist in the workspace", activityFriendlyName)
-      )
-    );
+    public void updateWorkerStatus(Worker worker, String activityFriendlyName) {
+        Activity activity = findActivityByName(activityFriendlyName).orElseThrow(() ->
+        new TaskRouterException(
+                String.format("The activity '%s' doesn't exist in the workspace",
+                        activityFriendlyName)
+                )
+                );
 
-    new WorkerUpdater(workspace.getSid(), worker.getSid())
-      .setActivitySid(activity.getSid())
-      .update(client);
-  }
+        new WorkerUpdater(workspace.getSid(), worker.getSid())
+        .setActivitySid(activity.getSid())
+        .update(client);
+    }
 }

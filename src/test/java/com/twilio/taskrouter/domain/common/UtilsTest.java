@@ -17,7 +17,7 @@ public class UtilsTest {
 
   private static URI getResourceURI(String filePath) {
     Optional<URL> url =
-      Optional.ofNullable(UtilsTest.class.getResource(File.separator + filePath));
+      Optional.ofNullable(UtilsTest.class.getResource("/" + filePath));
     return url.map(u -> {
       try {
         return u.toURI();
