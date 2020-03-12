@@ -266,7 +266,7 @@ class CreateWorkspaceTask {
                     defaultQueue.getSid())
                     .expression("1=1")
                     .priority(1)
-                    .timeout(30)
+                    .timeout(1800)
                     .build();
 
             List<WorkflowRule> rules = routingConfigRules.getValuesAs(JsonObject.class).stream()
@@ -280,7 +280,7 @@ class CreateWorkspaceTask {
                         WorkflowRuleTarget queueRuleTarget = new WorkflowRuleTarget
                                 .Builder(ruleQueue.getSid())
                                 .priority(5)
-                                .timeout(30)
+                                .timeout(1800)
                                 .build();
 
                         List<WorkflowRuleTarget> ruleTargets = Arrays.asList(
