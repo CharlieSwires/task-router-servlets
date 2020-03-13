@@ -37,12 +37,15 @@ public class EventsServlet extends HttpServlet {
   private final TwilioAppSettings twilioSettings;
 
   private final MissedCallRepository missedCallRepository;
+  private final AssignmentServlet assignmentServlet;
 
   @Inject
   public EventsServlet(TwilioAppSettings twilioSettings,
-                       MissedCallRepository missedCallRepository) {
+                       MissedCallRepository missedCallRepository,
+                       AssignmentServlet assignmentServlet) {
     this.twilioSettings = twilioSettings;
     this.missedCallRepository = missedCallRepository;
+    this.assignmentServlet = assignmentServlet;
   }
 
   @Override
@@ -50,12 +53,20 @@ public class EventsServlet extends HttpServlet {
     IOException {
     Optional.ofNullable(req.getParameter("EventType"))
       .ifPresent(eventName -> {
+        System.out.println("eventName=" + eventName);
         switch (eventName) {
           case "workflow.timeout":
           case "task.canceled":
-            parseAttributes("TaskAttributes", req)
-              .ifPresent(this::addMissingCallAndLeaveMessage);
-            break;
+              parseAttributes("TaskAttributes", req)
+                .ifPresent(this::addMissingCallAndLeaveMessage);
+              break;
+          case "task.wrapup":
+              try {
+                  this.assignmentServlet.doPost(req, resp);
+              } catch (Exception e) {
+                  e.printStackTrace();
+              }
+              break;
           case "worker.activity.update":
             Optional.ofNullable(req.getParameter("WorkerActivityName"))
               .filter("Offline"::equals)
@@ -69,6 +80,7 @@ public class EventsServlet extends HttpServlet {
       });
   }
 
+
   private Optional<JsonObject> parseAttributes(String parameter, HttpServletRequest request) {
     return Optional.ofNullable(request.getParameter(parameter))
       .map(jsonRequest -> Json.createReader(new StringReader(jsonRequest)).readObject());
@@ -76,6 +88,7 @@ public class EventsServlet extends HttpServlet {
 
   @Transactional
   private void addMissingCallAndLeaveMessage(JsonObject taskAttributesJson) {
+    System.out.println("taskAttributesJson=" + taskAttributesJson.toString());
     String phoneNumber = taskAttributesJson.getString("from");
     String selectedProduct = taskAttributesJson.getString("selected_product");
 

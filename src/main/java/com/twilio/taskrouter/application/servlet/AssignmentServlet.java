@@ -31,10 +31,7 @@ public class AssignmentServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException {
-      System.out.println("req=" + req);
-
-      String callerPhone = req.getParameter("From");
-      System.out.println("callerPhone=" + (callerPhone != null ? callerPhone : "null"));
+    String callerPhone = req.getParameter("From");
     resp.setContentType("application/json");
     if (dequeueInstruction.get("from") != null) {
         dequeueInstruction.remove("from");
@@ -43,5 +40,7 @@ public class AssignmentServlet extends HttpServlet {
         dequeueInstruction.put("from", callerPhone);
     }
     resp.getWriter().print((new JSONObject(dequeueInstruction)).toString());
+    System.out.println("dequeueInstruction=" + (new JSONObject(dequeueInstruction)).toString());
+
   }
 }
