@@ -47,6 +47,11 @@
                             </c:forEach>
                           </tbody>
                         </table>
+                        <p>&nbsp;&nbsp;Call to your Twilio Phone number:<p>
+                          <ul>
+                            <c:set var="phone" value="${settings.phoneNumber}"/>
+                             <li><a href="tel:${phone.phoneNumber}">${phone.internationalPhoneNumber}</a></li>
+                          </ul>
                       </c:otherwise>
                   </c:choose>
            </div>
