@@ -70,13 +70,20 @@ public class EventsServlet extends HttpServlet {
             case "task.canceled":
                 parseAttributes("TaskAttributes", req)
                 .ifPresent(this::addMissingCallAndLeaveMessage);
-                break;
-            case "task.wrapup":
+//                break;
+//            case "task.wrapup":
+              Optional<JsonObject> temp = parseAttributes("TaskAttributes", req);
+              if (twilioSettings.getPhoneNumber().getPhoneNumber()
+                      .equals(temp.get().getString("from"))) {
+//              req.setAttribute("From", "+441430440375");
+//                     // (temp.isPresent() ? temp.get().getString("from") : (String) null));
+//              this.assignmentServlet.doPost(req, resp);
                 try {
                     setIdle(req, resp);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+              }
 //                try {
 //                    Optional<JsonObject> temp = parseAttributes("TaskAttributes", req);
 //                    req.setAttribute("From", "+441430440375");
@@ -134,7 +141,7 @@ public class EventsServlet extends HttpServlet {
     }
     private void setIdle(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-      //final VoiceResponse twimlResponse;
+//      final VoiceResponse twimlResponse;
       final String newStatus = getNewWorkerStatus(req);
       final String workerPhone = req.getParameter("From");
 
@@ -152,10 +159,10 @@ public class EventsServlet extends HttpServlet {
         }).orElseGet(() -> new Sms.Builder("You are not a valid worker").build());
 
         //twimlResponse = new VoiceResponse.Builder().sms(responseSms).build();
-        //twimlResponse = new VoiceResponse.Builder().dial(dial).build();
-
-        //resp.setContentType("application/xml");
-        //resp.getWriter().print(twimlResponse.toXml());
+//        twimlResponse = new VoiceResponse.Builder().dial(dial).build();
+//
+//        resp.setContentType("application/xml");
+//        resp.getWriter().print(twimlResponse.toXml());
 
       } catch (/*TwiML*/ Exception e) {
         LOG.log(Level.SEVERE, "Error while providing answer to a workers' sms", e);
