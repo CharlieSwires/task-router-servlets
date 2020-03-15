@@ -31,7 +31,7 @@ public class AssignmentServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse resp)
     throws ServletException, IOException {
-    String callerPhone = req.getParameter("From");
+    String callerPhone = (String) req.getAttribute("From");
     resp.setContentType("application/json");
     if (dequeueInstruction.get("from") != null) {
         dequeueInstruction.remove("from");

@@ -51,8 +51,8 @@ public class AssignmentServletTest {
 
   @Test
   public void shouldReturnRightDequeueInstructionInJson() throws Exception {
-      when(requestMock.getParameter("From")).thenReturn("+441234567890");
-      final String callerPhone = requestMock.getParameter("From");
+      when(requestMock.getAttribute("From")).thenReturn("+441234567890");
+      final String callerPhone = (String) requestMock.getAttribute("From");
       String expectedDequeueInstruction = Json.createObjectBuilder()
       .add("instruction", "dequeue")
       .add("from", callerPhone)
