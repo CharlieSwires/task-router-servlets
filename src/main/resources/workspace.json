@@ -52,7 +52,7 @@
   "workflow": {
     "name": "Sales",
     "callback": "%(host)s/assignment",
-    "timeout": "1800",
+    "timeout": "15",
     "routingConfiguration": [
       {
         "expression": "selected_product==\"ProgrammableSMS\"",
