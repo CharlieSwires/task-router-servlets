@@ -17,13 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.logging.Logger;
-import java.util.logging.Level;
-import com.twilio.twiml.Number;
-import com.twilio.taskrouter.domain.model.WorkspaceFacade;
-import com.twilio.twiml.Sms;
+//import java.util.logging.Level;
+//import com.twilio.twiml.Number;
+//import com.twilio.taskrouter.domain.model.WorkspaceFacade;
+//import com.twilio.twiml.Sms;
 //import com.twilio.twiml.TwiMLException;
-import com.twilio.twiml.VoiceResponse;
-import com.twilio.twiml.Dial;
+//import com.twilio.twiml.VoiceResponse;
+//import com.twilio.twiml.Dial;
 import java.util.Optional;
 import javax.json.JsonObject;
 
@@ -44,18 +44,12 @@ public class EventsServlet extends HttpServlet {
     private final TwilioAppSettings twilioSettings;
 
     private final MissedCallRepository missedCallRepository;
-    private final AssignmentServlet assignmentServlet;
-    private final WorkspaceFacade workspace;
 
     @Inject
     public EventsServlet(TwilioAppSettings twilioSettings,
-            MissedCallRepository missedCallRepository,
-            AssignmentServlet assignmentServlet,
-            WorkspaceFacade workspace) {
+            MissedCallRepository missedCallRepository) {
         this.twilioSettings = twilioSettings;
         this.missedCallRepository = missedCallRepository;
-        this.assignmentServlet = assignmentServlet;
-        this.workspace = workspace;
     }
 
     @Override
@@ -72,7 +66,7 @@ public class EventsServlet extends HttpServlet {
             switch (eventName) {
             case "workflow.timeout":
             case "task.canceled":
-                parseAttributes("TaskAttributes", req)
+                temp
                 .ifPresent(this::addMissingCallAndLeaveMessage);
                 break;
 //            case "task.wrapup":
@@ -145,40 +139,40 @@ public class EventsServlet extends HttpServlet {
         }
 
     }
-    private void setIdle(HttpServletRequest req, HttpServletResponse resp, String phone)
-            throws ServletException, IOException {
-        final VoiceResponse twimlResponse;
-        final String newStatus = getNewWorkerStatus(req);
-        final String workerPhone = phone;
+//    private void setIdle(HttpServletRequest req, HttpServletResponse resp, String phone)
+//            throws ServletException, IOException {
+//        final VoiceResponse twimlResponse;
+//        final String newStatus = getNewWorkerStatus(req);
+//        final String workerPhone = phone;
+//
+//        try {
+//            Dial.Builder dialBuilder = new Dial.Builder();
+//
+//            Number number = new Number.Builder(workerPhone).build();
+//            dialBuilder = dialBuilder.number(number).callerId(
+//                    twilioSettings.getPhoneNumber().getPhoneNumber());
+//
+//            Dial dial = dialBuilder.build();
+//            Sms responseSms = workspace.findWorkerByPhone(workerPhone).map(worker -> {
+//                workspace.updateWorkerStatus(worker, newStatus);
+//                return new Sms.Builder(String.format("Your status has changed to %s",
+//                        newStatus)).build();
+//            }).orElseGet(() -> new Sms.Builder("You are not a valid worker").build());
+//
+//            //twimlResponse = new VoiceResponse.Builder().sms(responseSms).build();
+//            twimlResponse = new VoiceResponse.Builder().dial(dial).build();
+//            //
+//            //        resp.setContentType("application/xml");
+//            //        resp.getWriter().print(twimlResponse.toXml());
+//
+//        } catch (/*TwiML*/Exception e) {
+//            LOG.log(Level.SEVERE, "Error while providing answer to a workers' sms", e);
+//        }
+//
+//    }
 
-        try {
-            Dial.Builder dialBuilder = new Dial.Builder();
-
-            Number number = new Number.Builder(workerPhone).build();
-            dialBuilder = dialBuilder.number(number).callerId(
-                    twilioSettings.getPhoneNumber().getPhoneNumber());
-
-            Dial dial = dialBuilder.build();
-            Sms responseSms = workspace.findWorkerByPhone(workerPhone).map(worker -> {
-                workspace.updateWorkerStatus(worker, newStatus);
-                return new Sms.Builder(String.format("Your status has changed to %s",
-                        newStatus)).build();
-            }).orElseGet(() -> new Sms.Builder("You are not a valid worker").build());
-
-            //twimlResponse = new VoiceResponse.Builder().sms(responseSms).build();
-            twimlResponse = new VoiceResponse.Builder().dial(dial).build();
-            //
-            //        resp.setContentType("application/xml");
-            //        resp.getWriter().print(twimlResponse.toXml());
-
-        } catch (/*TwiML*/Exception e) {
-            LOG.log(Level.SEVERE, "Error while providing answer to a workers' sms", e);
-        }
-
-    }
-
-    private String getNewWorkerStatus(HttpServletRequest request) {
-        return "Idle";
-    }
+//    private String getNewWorkerStatus(HttpServletRequest request) {
+//        return "Idle";
+//    }
 
 }
