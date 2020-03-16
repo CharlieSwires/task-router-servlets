@@ -37,13 +37,14 @@ public class AssignmentServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Optional<JsonObject> temp = parseAttributes("TaskAttributes", req);
+        Optional<JsonObject> temp2 = parseAttributes("WorkerAttributes", req);
         System.out.println("AssignmentServlet="
-                + " to=" + temp.get().getString("to")
-                + " from=" + temp.get().getString("from"));
-        String toPhone = temp != null && temp.isPresent()
-                ? temp.get().getString("to") : null;
+                + " to=" + temp2.get().getString("contact_uri")
+                + " from=" + temp.get().getString("to"));
+        String toPhone = temp2 != null && temp2.isPresent()
+                ? temp2.get().getString("contact_uri") : null;
         String callerPhone = temp != null && temp.isPresent()
-                ? (String) temp.get().getString("from") : null;
+                ? (String) temp.get().getString("to") : null;
         resp.setContentType("application/json");
         if (dequeueInstruction.get("to") != null) {
             dequeueInstruction.remove("to");
@@ -60,10 +61,10 @@ public class AssignmentServlet extends HttpServlet {
         String dequeString = "{";
         dequeString += "\"instruction\":" + "\""
         + dequeueInstruction.get("instruction") + "\",";
-//        dequeString += "\"to\":" + "\""
-//        + dequeueInstruction.get("to") + "\",";
-//        dequeString += "\"from\":" + "\""
-//        + dequeueInstruction.get("from") + "\",";
+        dequeString += "\"to\":" + "\""
+        + dequeueInstruction.get("to") + "\",";
+        dequeString += "\"from\":" + "\""
+        + dequeueInstruction.get("from") + "\",";
         dequeString += "\"post_work_activity_sid\":" + "\""
         + dequeueInstruction.get("post_work_activity_sid") + "\"}";
         resp.getWriter().print(dequeString);
