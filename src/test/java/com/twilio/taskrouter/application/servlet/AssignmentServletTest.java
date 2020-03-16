@@ -43,7 +43,10 @@ public class AssignmentServletTest {
 
   @Test
   public void shouldCallPostWorkSid() throws Exception {
-    when(requestMock.getParameter("From")).thenReturn("+441234567890");
+      when(requestMock.getParameter("TaskAttributes"))
+      .thenReturn("{ \"from\": \"+4412345678\" }");
+      when(requestMock.getParameter("WorkerAttributes"))
+      .thenReturn("{ \"contact_uri\": \"+44123456789\" }");
     assignmentServlet.doPost(requestMock, responseMock);
 
     verify(twilioAppSettingsMock, times(1)).getPostWorkActivitySid();
@@ -51,19 +54,24 @@ public class AssignmentServletTest {
 
   @Test
   public void shouldReturnRightDequeueInstructionInJson() throws Exception {
-      when(requestMock.getAttribute("From")).thenReturn("+441234567890");
-      final String callerPhone = (String) requestMock.getAttribute("From");
+      when(requestMock.getParameter("TaskAttributes"))
+      .thenReturn("{ \"from\": \"+4412345678\" }");
+      when(requestMock.getParameter("WorkerAttributes"))
+      .thenReturn("{ \"contact_uri\": \"+44123456789\" }");
       String expectedDequeueInstruction = Json.createObjectBuilder()
       .add("instruction", "dequeue")
-      .add("from", callerPhone)
+      .add("from", "+4412345678")
       .add("post_work_activity_sid", POST_WORK_ACTIVITY_MOCK)
-      .build().toString();
+      .add("to", "+44123456789")
+     .build().toString();
 
     when(twilioAppSettingsMock.getPostWorkActivitySid()).thenReturn(POST_WORK_ACTIVITY_MOCK);
 
     assignmentServlet.doPost(requestMock, responseMock);
 
     verify(responseMock, times(1)).setContentType("application/json");
+    System.out.println("responseMock.getWriter()=" + responseMock.getWriter());
+    System.out.println("times(1)=" + times(1));
     verify(responseMock.getWriter(), times(1)).print(expectedDequeueInstruction);
   }
 

@@ -10,14 +10,12 @@ import com.twilio.type.PhoneNumber;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.json.Json;
-import javax.json.JsonObject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import com.twilio.twiml.Number;
@@ -26,6 +24,8 @@ import com.twilio.twiml.Sms;
 //import com.twilio.twiml.TwiMLException;
 import com.twilio.twiml.VoiceResponse;
 import com.twilio.twiml.Dial;
+import java.util.Optional;
+import javax.json.JsonObject;
 
 /**
  * Servlet for Events callback for missed calls
