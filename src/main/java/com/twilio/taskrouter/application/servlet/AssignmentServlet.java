@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.json.JSONObject;
+//import org.json.JSONObject;
 import java.util.Optional;
 import javax.json.JsonObject;
 import javax.json.Json;
@@ -37,13 +37,11 @@ public class AssignmentServlet extends HttpServlet {
     public void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Optional<JsonObject> temp = parseAttributes("TaskAttributes", req);
-        Optional<JsonObject> temp2 = parseAttributes("WorkerAttributes", req);
         System.out.println("AssignmentServlet="
-                //+ " to=" + temp.get().getString("to")
-                + " from=" + temp.get().getString("from")
-                + " " + (temp2 != null ? temp2.toString() : null));
-        String toPhone = temp2 != null && temp2.isPresent()
-                ? temp2.get().getString("contact_uri") : null;
+                + " to=" + temp.get().getString("to")
+                + " from=" + temp.get().getString("from"));
+        String toPhone = temp != null && temp.isPresent()
+                ? temp.get().getString("to") : null;
         String callerPhone = temp != null && temp.isPresent()
                 ? (String) temp.get().getString("from") : null;
         resp.setContentType("application/json");
@@ -59,9 +57,18 @@ public class AssignmentServlet extends HttpServlet {
         if (callerPhone != null) {
             dequeueInstruction.put("from", callerPhone);
         }
-        resp.getWriter().print((new JSONObject(dequeueInstruction)).toString());
+        String dequeString = "{";
+        dequeString += "\"instruction\": " + "\""
+        + dequeueInstruction.get("instruction") + "\",";
+//        dequeString += "\"to\": " + "\""
+//        + dequeueInstruction.get("to") + "\",";
+//        dequeString += "\"from\": " + "\""
+//        + dequeueInstruction.get("from") + "\",";
+        dequeString += "\"post_work_activity_sid\": " + "\""
+        + dequeueInstruction.get("post_work_activity_sid") + "\"}";
+        resp.getWriter().print(dequeString);
         System.out.println("dequeueInstruction="
-        + (new JSONObject(dequeueInstruction)).toString());
+        + dequeString);
 
     }
 
