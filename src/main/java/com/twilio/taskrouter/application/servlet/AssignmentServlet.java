@@ -58,13 +58,13 @@ public class AssignmentServlet extends HttpServlet {
             dequeueInstruction.put("from", callerPhone);
         }
         String dequeString = "{";
-        dequeString += "\"instruction\": " + "\""
+        dequeString += "\"instruction\":" + "\""
         + dequeueInstruction.get("instruction") + "\",";
-//        dequeString += "\"to\": " + "\""
+//        dequeString += "\"to\":" + "\""
 //        + dequeueInstruction.get("to") + "\",";
-//        dequeString += "\"from\": " + "\""
+//        dequeString += "\"from\":" + "\""
 //        + dequeueInstruction.get("from") + "\",";
-        dequeString += "\"post_work_activity_sid\": " + "\""
+        dequeString += "\"post_work_activity_sid\":" + "\""
         + dequeueInstruction.get("post_work_activity_sid") + "\"}";
         resp.getWriter().print(dequeString);
         System.out.println("dequeueInstruction="

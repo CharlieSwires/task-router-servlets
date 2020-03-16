@@ -68,7 +68,7 @@ public class AssignmentServletTest {
     verify(responseMock, times(1)).setContentType("application/json");
     System.out.println("responseMock.getWriter()=" + responseMock.getWriter());
     System.out.println("times(1)=" + times(1));
-    //verify(responseMock.getWriter(), times(1)).print(expectedDequeueInstruction);
+    verify(responseMock.getWriter(), times(1)).print(expectedDequeueInstruction);
   }
 
 }
