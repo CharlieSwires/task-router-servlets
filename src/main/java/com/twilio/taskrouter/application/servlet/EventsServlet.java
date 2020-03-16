@@ -60,14 +60,21 @@ public class EventsServlet extends HttpServlet {
             Optional<JsonObject> temp = parseAttributes("TaskAttributes", req);
             Optional<JsonObject> temp2 = parseAttributes("WorkerAttributes", req);
             System.out.println("eventName=" + eventName
-                    + " to=" + temp.get().getString("to")
-                    + " from=" + temp.get().getString("from")
-                    + " " + (temp2 != null ? temp2.toString() : null));
+                    + " to=" + (temp != null && temp.isPresent()
+                    ? temp.get().getString("to") : null)
+                    + " from=" + (temp != null && temp.isPresent()
+                    ? temp.get().getString("from") : null)
+                    + " " + (temp2 != null && temp2.isPresent()
+                    ? temp2.toString() : null));
             switch (eventName) {
             case "workflow.timeout":
             case "task.canceled":
+                try {
                 temp
                 .ifPresent(this::addMissingCallAndLeaveMessage);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
 //            case "task.wrapup":
 //                //reset worker to idle
@@ -114,7 +121,7 @@ public class EventsServlet extends HttpServlet {
 
     @Transactional
     private void addMissingCallAndLeaveMessage(JsonObject taskAttributesJson) {
-        System.out.println("taskAttributesJson=" + taskAttributesJson.toString());
+        //System.out.println("taskAttributesJson=" + taskAttributesJson.toString());
         String phoneNumber = taskAttributesJson.getString("from");
         String selectedProduct = taskAttributesJson.getString("selected_product");
 
