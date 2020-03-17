@@ -68,7 +68,7 @@ public class AssignmentServlet extends HttpServlet {
         dequeString += "\"post_work_activity_sid\":" + "\""
         + dequeueInstruction.get("post_work_activity_sid") + "\"}";
         resp.getWriter().print(dequeString);
-        System.out.println("dequeueInstruction="
+        System.out.println("dequeString="
         + dequeString);
 
     }
