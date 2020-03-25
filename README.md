@@ -39,7 +39,8 @@ uses a SQLite database to log phone calls which were not assisted.
 
   You can find your `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` in your
   Twilio Account Settings. You will also need a TWILIO_NUMBER that you
-  may find [here][twilio-phone-number].
+  may find [here][twilio-phone-number] this number must be capable of Voice and SMS.
+  MISSED_CALLS_EMAIL_ADDRESS is needed also.
 
   Run `source .env` to export the environment variables.
 
@@ -111,18 +112,21 @@ uses a SQLite database to log phone calls which were not assisted.
 
 1. Reply with 1.
 1. The specified phone for agent 2 (Alice) will be called:  __agent2-phone__.
-1. If __agent2-phone__ is not answered in 30 seconds then __agent1-phone__ will
-  be called.
+1. If __agent2-phone__ is not answered it will go to voice mail on the agent's phone.
 1. In case the second agent doesn't answer the call, it will be logged as a
   missed call. You can see all missed calls in the main page of the running
   server at [http://{sub-domain}.ngrok.io](//localhost:8080).
 1. Repeat the process but enter any key different to __1__ to choose Voice.
 1. The specified phone for agent 1 (Bob) will be called:  __agent1-phone__.
-1. If __agent1-phone__ is not answered in 30 seconds then __agent2-phone__ will
-  be called.
+1. If __agent1-phone__ is not answered it will go to voice mail on the agent's phone.
 1. In case the second agent doesn't answer the call, it will be logged as a
   missed call. You can see all missed calls in the main page of the running
   server at [http://{sub-domain}.ngrok.io](//localhost:8080).
+  
+  Calls are queued correctly now in a first come first served basis.
+  
+  Agents Bob and Alice can send "off" and "on" as an SMS to the [twilio-phone-number]
+  to change between Offline and Idle status.
 
  [twilio-phone-number]: https://www.twilio.com/console/phone-numbers/incoming
 
