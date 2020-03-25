@@ -40,7 +40,8 @@ public class AssignmentServlet extends HttpServlet {
         Optional<JsonObject> temp2 = parseAttributes("WorkerAttributes", req);
         System.out.println("AssignmentServlet="
                 + " to=" + temp2.get().getString("contact_uri")
-                + " from=" + temp.get().getString("to"));
+                + " from=" + temp.get().getString("to")
+                + " TaskSid" + req.getParameter("TaskSid"));
         String toPhone = temp2 != null && temp2.isPresent()
                 ? temp2.get().getString("contact_uri") : null;
         String callerPhone = temp != null && temp.isPresent()

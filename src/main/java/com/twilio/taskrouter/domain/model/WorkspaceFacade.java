@@ -91,11 +91,12 @@ public class WorkspaceFacade {
     }
 
     public void addTaskQueue(Map<String, String> taskQueueParams) {
-        new TaskQueueCreator(this.workspace.getSid(),
+        TaskQueueCreator taskQueueCreator = new TaskQueueCreator(this.workspace.getSid(),
                 taskQueueParams.get("FriendlyName"),
                 taskQueueParams.get("ReservationActivitySid"),
-                taskQueueParams.get("AssignmentActivitySid"))
-        .create(client);
+                taskQueueParams.get("AssignmentActivitySid"));
+        taskQueueCreator.setTargetWorkers(taskQueueParams.get("TargetWorkers"));
+        taskQueueCreator.create(client);
     }
 
     public Workflow addWorkflow(Map<String, String> workflowParams) {
