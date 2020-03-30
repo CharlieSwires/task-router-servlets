@@ -26,15 +26,15 @@
 <body>
 <div class="container">
     <section class="page-header">
-        <h1>Missed Calls</h1>
+        <h1>Waiting or Missed Calls</h1>
     </section>
     <section class="body-content">
           <div class="panel panel-default full-height-container">
-                <div class="panel-heading"><strong>Missed calls</strong> <span class="text-muted">Product/Number<span></div>
+                <div class="panel-heading"><strong>Waiting or Missed calls</strong> <span class="text-muted">Product/Number<span></div>
                   <c:choose>
                       <c:when test="${missedCalls.isEmpty()}">
                         <div class="panel-body">
-                          <p>There are no missed calls at the moment.</p>
+                          <p>There are no waiting or missed calls at the moment.</p>
                           <p>Call to your Twilio Phone number:<p>
                           <ul>
                             <c:set var="phone" value="${settings.phoneNumber}"/>
