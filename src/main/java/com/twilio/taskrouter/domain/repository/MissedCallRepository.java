@@ -69,10 +69,11 @@ public class MissedCallRepository {
         ParameterExpression<PhoneNumber> p = criteriaBuilder.parameter(PhoneNumber.class);
         CriteriaQuery<MissedCall> select = query.select(root)
                 .where(criteriaBuilder.equal(root.get("phoneNumber"),
-                        new PhoneNumber(callerPhone)));
-        for (MissedCall mc: entityManager.createQuery(select).getResultList()) {
-            entityManager.remove(mc);
-        }
+                        new PhoneNumber(callerPhone)))
+                .orderBy(criteriaBuilder.desc(root.get("created")));
+        List<MissedCall> mc = entityManager.createQuery(select).getResultList();
+        entityManager.remove(mc.get(0));
+
         tx.commit();
     }
 }

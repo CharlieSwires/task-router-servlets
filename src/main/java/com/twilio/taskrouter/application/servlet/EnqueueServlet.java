@@ -72,7 +72,7 @@ public class EnqueueServlet extends HttpServlet {
       String phoneNumber = from;
 
       MissedCall missedCall = new MissedCall(phoneNumber,
-              selectedProduct);
+              "Queued -- " + selectedProduct);
       missedCallRepository.add(missedCall);
       LOG.info("Added Call: " + missedCall);
 

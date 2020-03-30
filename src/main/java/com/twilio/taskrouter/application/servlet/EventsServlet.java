@@ -116,14 +116,18 @@ public class EventsServlet extends HttpServlet {
         //System.out.println("taskAttributesJson=" + taskAttributesJson.toString());
         String phoneNumber = taskAttributesJson.getString("from");
         String selectedProduct = taskAttributesJson.getString("selected_product");
-
+        missedCallRepository.delete(phoneNumber);
         MissedCall missedCall = new MissedCall(phoneNumber,
                 "Missed Call -- " + selectedProduct);
         missedCallRepository.add(missedCall);
         LOG.info("Added Missing Call: " + missedCall);
 
         String callSid = taskAttributesJson.getString("call_sid");
-        twilioSettings.redirectToVoiceMail(callSid, LEAVE_MSG);
+        try {
+            twilioSettings.redirectToVoiceMail(callSid, LEAVE_MSG);
+        } catch (com.twilio.exception.ApiException e) {
+            LOG.info("Caller hung up");
+        }
     }
 
     private void notifyOfflineStatusToWorker(JsonObject workerAttributesJson) {
