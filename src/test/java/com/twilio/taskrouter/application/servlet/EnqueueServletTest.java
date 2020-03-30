@@ -21,6 +21,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.twilio.taskrouter.domain.repository.MissedCallRepository;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnqueueServletTest {
@@ -33,13 +34,15 @@ public class EnqueueServletTest {
 
     @Mock
     private TwilioAppSettings twilioAppSettingsMock;
+    @Mock
+    private MissedCallRepository mcr;
 
     private EnqueueServlet enqueueServlet;
 
     @Before
     public void setUp() {
       when(twilioAppSettingsMock.getWorkflowSid()).thenReturn("WWfXXXXXXXXXXXX");
-      this.enqueueServlet = new EnqueueServlet(twilioAppSettingsMock);
+      this.enqueueServlet = new EnqueueServlet(twilioAppSettingsMock, mcr);
     }
 
     @Test

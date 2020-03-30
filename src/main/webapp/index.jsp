@@ -15,7 +15,14 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" crossorigin="anonymous">
     <link rel="stylesheet" href="css/task-router.css">
-</head>
+	<script type="text/javascript">
+		window.onload = function() {
+    			setTimeout(function () {
+        			location.reload()
+    			}, 10000);
+ 		};
+ </script>
+ </head>
 <body>
 <div class="container">
     <section class="page-header">

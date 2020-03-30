@@ -19,7 +19,7 @@ public final class MissedCall {
   @GeneratedValue
   private Long id;
 
-  @Size(max = 30)
+  @Size(max = 50)
   private String selectedProduct;
 
   @Embedded

@@ -117,7 +117,8 @@ public class EventsServlet extends HttpServlet {
         String phoneNumber = taskAttributesJson.getString("from");
         String selectedProduct = taskAttributesJson.getString("selected_product");
 
-        MissedCall missedCall = new MissedCall(phoneNumber, selectedProduct);
+        MissedCall missedCall = new MissedCall(phoneNumber,
+                "Missed Call -- " + selectedProduct);
         missedCallRepository.add(missedCall);
         LOG.info("Added Missing Call: " + missedCall);
 
@@ -138,40 +139,6 @@ public class EventsServlet extends HttpServlet {
         }
 
     }
-    //    private void setIdle(HttpServletRequest req, HttpServletResponse resp, String phone)
-    //            throws ServletException, IOException {
-    //        final VoiceResponse twimlResponse;
-    //        final String newStatus = getNewWorkerStatus(req);
-    //        final String workerPhone = phone;
-    //
-    //        try {
-    //            Dial.Builder dialBuilder = new Dial.Builder();
-    //
-    //            Number number = new Number.Builder(workerPhone).build();
-    //            dialBuilder = dialBuilder.number(number).callerId(
-    //                    twilioSettings.getPhoneNumber().getPhoneNumber());
-    //
-    //            Dial dial = dialBuilder.build();
-    //            Sms responseSms = workspace.findWorkerByPhone(workerPhone).map(worker -> {
-    //                workspace.updateWorkerStatus(worker, newStatus);
-    //                return new Sms.Builder(String.format("Your status has changed to %s",
-    //                        newStatus)).build();
-    //            }).orElseGet(() -> new Sms.Builder("You are not a valid worker").build());
-    //
-    //            //twimlResponse = new VoiceResponse.Builder().sms(responseSms).build();
-    //            twimlResponse = new VoiceResponse.Builder().dial(dial).build();
-    //            //
-    //            //        resp.setContentType("application/xml");
-    //            //        resp.getWriter().print(twimlResponse.toXml());
-    //
-    //        } catch (/*TwiML*/Exception e) {
-    //            LOG.log(Level.SEVERE, "Error while providing answer to a workers' sms", e);
-    //        }
-    //
-    //    }
 
-    //    private String getNewWorkerStatus(HttpServletRequest request) {
-    //        return "Idle";
-    //    }
 
 }

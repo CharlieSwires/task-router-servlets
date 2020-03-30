@@ -16,6 +16,7 @@ import java.util.Optional;
 import javax.json.JsonObject;
 import javax.json.Json;
 import java.io.StringReader;
+import com.twilio.taskrouter.domain.repository.MissedCallRepository;
 
 /**
  * Servlet for Task assignments
@@ -24,9 +25,12 @@ import java.io.StringReader;
 public class AssignmentServlet extends HttpServlet {
 
     private Map<String, String> dequeueInstruction = new HashMap<String, String>();
+    private final MissedCallRepository missedCallRepository;
 
     @Inject
-    public AssignmentServlet(TwilioAppSettings twilioAppSettings) {
+    public AssignmentServlet(TwilioAppSettings twilioAppSettings,
+            MissedCallRepository missedCallRepository) {
+        this.missedCallRepository = missedCallRepository;
 
         dequeueInstruction.put("instruction", "dequeue");
         dequeueInstruction.put("post_work_activity_sid",
@@ -41,6 +45,8 @@ public class AssignmentServlet extends HttpServlet {
         System.out.println("AssignmentServlet="
                 + " to=" + temp2.get().getString("contact_uri")
                 + " from=" + temp.get().getString("to")
+                + " from2=" + (temp.get().getString("from") != null
+                ? temp.get().getString("from") : null)
                 + " TaskSid" + req.getParameter("TaskSid"));
         String toPhone = temp2 != null && temp2.isPresent()
                 ? temp2.get().getString("contact_uri") : null;
@@ -58,6 +64,9 @@ public class AssignmentServlet extends HttpServlet {
         }
         if (callerPhone != null) {
             dequeueInstruction.put("from", callerPhone);
+            //delete mc
+            missedCallRepository.delete(temp.get().getString("from"));
+
         }
         String dequeString = "{";
         dequeString += "\"instruction\":" + "\""
