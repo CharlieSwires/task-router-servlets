@@ -57,7 +57,8 @@ public class MessageServlet extends HttpServlet {
 
   private String getNewWorkerStatus(HttpServletRequest request) {
     return Optional.ofNullable(request.getParameter("Body"))
-      .filter(x -> x.equals("off")).map((first) -> "Offline").orElse("Idle");
+      .filter(x -> (x != null ? x.toLowerCase().equals("off") : false))
+      .map((first) -> "Offline").orElse("Idle");
   }
 
 }
